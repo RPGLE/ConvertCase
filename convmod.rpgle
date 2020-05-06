@@ -32,7 +32,7 @@ ctl-opt option(*srcstmt: *nodebugio) datfmt(*iso) nomain;
 // Parameter/s: stringToConvert => Our string to convert.
 //              caseRequested => UPPER_CASE ('1')
 //                            => LOWER_CASE ('2')
-//                            => PROPER_CASE ('3') NOT YET SUPPORTED!
+//                            => TITLE_CASE ('3') NOT YET SUPPORTED!
 //                            => PASCAL_CASE ('4') NOT YET SUPPORTED!
 //                            => CAMEL_CASE ('5') NOT YET SUPPORTED!
 //              startPosition => Optional parameter, decides where we'll start from.
@@ -66,7 +66,7 @@ dcl-proc convertCase export;
                            : LOWER_CASE_CHARACTERS
                            : stringToConvert
                            : ourRealStartPosition);
-  elseif caseRequested = PROPER_CASE;
+  elseif caseRequested = TITLE_CASE;
     // To come...
   elseif caseRequested = PASCAL_CASE;
     // To come...
