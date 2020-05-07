@@ -11,3 +11,10 @@ RPGLE Service Program for converting a string to different case types. A single 
   <li>Snake case (eg, "this IS a String." becomes "this_IS_a_String"</li> (Not yet supported)
 </ul>
 
+The package will be made of four parts:
+<ol>
+  <li>CONVMOD.rpgle - The module containing the logic for converting the string.</li>
+  <li>CONVMODP.rpgleinc - The copybook containing the prototype for the procedure as well as the constants required to call the procedure.</li>
+  <li>CONVMODS.bnd - The service program containing the signature.</li>
+  <li>CONVMOD (binding directory) - This is not part of the package but there are commands that need to be run to create this in order for the package to work.</li>
+</ol>
