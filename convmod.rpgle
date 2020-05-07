@@ -32,42 +32,75 @@ ctl-opt option(*srcstmt: *nodebugio) datfmt(*iso) nomain;
 // Parameter/s: stringToConvert => Our string to convert.
 //              caseRequested => UPPER_CASE ('1')
 //                            => LOWER_CASE ('2')
-//                            => TITLE_CASE ('3') NOT YET SUPPORTED!
+//                            => TITLE_CASE ('3')
 //                            => PASCAL_CASE ('4') NOT YET SUPPORTED!
 //                            => CAMEL_CASE ('5') NOT YET SUPPORTED!
-//              startPosition => Optional parameter, decides where we'll start from.
 //--------------------------------------------------------------------------------------------------
 dcl-proc convertCase export;
   dcl-pi convertCase varchar(1024);
     stringToConvert varchar(1024) const;
     caseRequested char(1) const;
-    startPosition zoned(3:0) options(*nopass) const;
   end-pi;
-
+  
   dcl-c UPPER_CASE_CHARACTERS const('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
   dcl-c LOWER_CASE_CHARACTERS const('abcdefghijklmnopqrstuvwxyz');
 
   dcl-s convertedString varchar(1024) inz;
-  dcl-s ourRealStartPosition zoned(2:0) inz(1);
-
-  // If the caller requested a particular position to start from, use it, otherwise we'll
-  // just stick with our first position - using this var makes our code simpler.
-  if %parms() >= %parmnum(startPosition);
-    ourRealStartPosition = startPosition;
-  endif;
+  dcl-s pos int(10:0) inz;
+  dcl-s previousPos int(10:0) inz;
+  dcl-s len int(10:0) inz;
 
   if caseRequested = UPPER_CASE;
     convertedString = %xlate(LOWER_CASE_CHARACTERS
                            : UPPER_CASE_CHARACTERS
-                           : stringToConvert
-                           : ourRealStartPosition);
+                           : %trim(stringToConvert));
   elseif caseRequested = LOWER_CASE;
     convertedString = %xlate(UPPER_CASE_CHARACTERS
                            : LOWER_CASE_CHARACTERS
-                           : stringToConvert
-                           : ourRealStartPosition);
+                           : %trim(stringToConvert));
   elseif caseRequested = TITLE_CASE;
-    // To come...
+    // Convert the whole thing to lower case with the very first character being upper.
+    // We must make sure the string is longer than two positions to do this.
+    if %len(%trim(stringToConvert)) >= 2;
+      convertedString = %xlate(LOWER_CASE_CHARACTERS
+                             : UPPER_CASE_CHARACTERS
+                             : %subst(%trim(stringToConvert) : 1 : 1))
+                      + %xlate(UPPER_CASE_CHARACTERS
+                             : LOWER_CASE_CHARACTERS
+                             : %subst(%trim(stringToConvert) : 2));
+
+      // Now loop over the string and find the new words by looking for blanks.
+      len = %len(convertedString);
+      pos = %scan(' ' : convertedString);
+      dow pos > *zero;
+        // Make sure we stay within the bounds of the string.
+        if pos + 2 <= len;
+          convertedString = %subst(convertedString : 1 : pos)
+                          + %xlate(LOWER_CASE_CHARACTERS
+                                 : UPPER_CASE_CHARACTERS
+                                 : %subst(convertedString : pos + 1 : 1))
+                          + %subst(convertedString : pos + 2);
+          previousPos = pos;
+          pos = %scan(' ' : convertedString : previousPos + 1);
+
+        // If there is just one character after the space, then capitalize it and leave.
+        else;
+          convertedString = %subst(convertedString : 1 : pos)
+                          + %xlate(LOWER_CASE_CHARACTERS
+                                 : UPPER_CASE_CHARACTERS
+                                 : %subst(convertedString : pos + 1 : 1));
+          leave;
+        endif;
+      enddo;
+
+    // If the length is less than 2, then we'll just uppercase this first character and send it on
+    // it's merry way.
+    else;
+      convertedString = %xlate(LOWER_CASE_CHARACTERS
+                             : UPPER_CASE_CHARACTERS
+                             : %trim(stringToConvert));
+    endif;
+
   elseif caseRequested = PASCAL_CASE;
     // To come...
   elseif caseRequested = CAMEL_CASE;
