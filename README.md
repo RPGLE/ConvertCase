@@ -13,8 +13,8 @@ RPGLE Service Program for converting a string to different case types. A single 
 
 The package will be made of four parts:
 <ol>
-  <li>convert.rpgle - The module containing the logic for converting the string.</li>
+  <li>CONVERT.rpgle - The module containing the logic for converting the string.</li>
   <li>CONVMOD_P.rpgleinc - The copybook containing the prototype for the procedure as well as the constants required to call the procedure.</li>
-  <li>CONVMOD_S.bnd - The service program containing the signature.</li>
+  <li>CONVERT.bnd - The service program containing the signature.</li>
   <li>CONVMOD (binding directory) - This is not part of the package but there are commands that need to be run to create this in order for the package to work.</li>
 </ol>
