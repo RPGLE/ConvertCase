@@ -1,0 +1,6 @@
+/********************************************************************/
+/*   Service Program for CONVERTCASE                                */
+/********************************************************************/
+STRPGMEXP  PGMLVL(*CURRENT) SIGNATURE('UTILITY_1')
+  EXPORT SYMBOL("CONVERTCASE")
+ENDPGMEXP   
