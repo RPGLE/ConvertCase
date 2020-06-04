@@ -15,6 +15,6 @@ The package will be made of four parts:
 <ol>
   <li>CONVERT.rpgle - The module containing the logic for converting the string.</li>
   <li>CONVMOD_P.rpgleinc - The copybook containing the prototype for the procedure as well as the constants required to call the procedure.</li>
-  <li>CONVERT.bnd - The service program containing the signature.</li>
+  <li>CONVERT.bnd - The service program containing the signature. To create this service program, use the following command, replacing LIBL with the library name </br>CRTSRVPGM SRVPGM(LIBL/CONVERT) MODULE(*SRVPGM) SRCFILE(LIBL/QSRVSRC)</li>
   <li>CONVMOD (binding directory) - This is not part of the package but there are commands that need to be run to create this in order for the package to work.</li>
 </ol>
